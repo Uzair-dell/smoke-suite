@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html><head><meta charset=utf-8><title>Tic Tac Toe</title>
+<style>
+body{margin:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui;background:#0d0d0d;color:#f5f5f5}
+#b{display:grid;grid-template-columns:repeat(3,90px);grid-template-rows:repeat(3,90px);gap:6px}
+.c{background:#161616;border:1px solid #333;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:2.6rem;font-weight:700;cursor:pointer;color:#4d6bfe}
+.c:hover{background:#1e1e1e}
+#st{margin-top:16px;color:#888}
+button{margin-top:14px;padding:10px 20px;border:0;border-radius:8px;background:#4d6bfe;color:#fff;cursor:pointer}
+</style></head>
+<body><h2>Tic Tac Toe</h2><div id=b></div><div id=st>X to move</div><button onclick=reset()>Restart</button>
+<script>
+var b=document.getElementById(`b`),st=document.getElementById(`st`),cells=[],turn=`X`,over=false,board=[`,`,`,`,`,`,`,`,`];
+for(var i=0;i<9;i++){(function(i){var c=document.createElement(`div`);c.className=`c`;c.onclick=function(){play(i)};b.appendChild(c);cells.push(c)})(i)}
+function play(i){if(over||board[i])return;board[i]=turn;cells[i].textContent=turn;if(check(turn)){st.textContent=turn+` wins!`;over=true}else if(board.every(function(x){return x})){st.textContent=`Draw!`;over=true}else{turn=turn===`X`?`O`:`X`;st.textContent=turn+` to move`}}
+function check(p){var w=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];return w.some(function(l){return l.every(function(i){return board[i]===p})})}
+function reset(){board=[`,`,`,`,`,`,`,`,`];turn=`X`;over=false;st.textContent=`X to move`;cells.forEach(function(c){c.textContent=``})}
+</script></body></html>
