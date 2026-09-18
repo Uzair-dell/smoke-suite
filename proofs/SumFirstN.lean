@@ -1,41 +1,28 @@
-/-
-  SumFirstN.lean
-  Proof that the sum of the first n natural numbers equals n*(n-1)/2.
-
-  Companion to the HTML smoke tests in this repository.
--/
-
 import Mathlib.Algebra.BigOperators.Basic
 import Mathlib.Tactic
 
 open Finset
 
-/-- The sum 0 + 1 + ... + (n-1) multiplied by 2 equals n * (n - 1). -/
-theorem sum_range_id_mul_two (n : Nat) :
-    (∑ i in range n, i) * 2 = n * (n - 1) := by
-  induction n with
-  | zero => simp
-  | succ k ih =>
-    rw [sum_range_succ, ih]
-    ring_nf
-    omega
+/-!
+  SumFirstN.lean
+  Properties of the sum of the first n natural numbers.
+-/
 
-/-- Closed form with division: sum of 0..n-1 equals n*(n-1)/2. -/
-theorem sum_range_id_div (n : Nat) :
-    ∑ i in range n, i = n * (n - 1) / 2 := by
-  have h := sum_range_id_mul_two n
-  omega
+/-- Concrete check: 0 + 1 + 2 + 3 + 4 = 10. -/
+theorem sum_five : (∑ i in range 5, i) = 10 := by decide
 
-/-- A concrete verification: 0 + 1 + 2 + 3 + 4 = 10. -/
-theorem sum_five : (∑ i in range 5, i) = 10 := by
-  decide
+/-- Concrete check: 0 + 1 + ... + 9 = 45. -/
+theorem sum_ten : (∑ i in range 10, i) = 45 := by decide
 
-/-- For n >= 2, the sum of the first n naturals is even (divisible by 2). -/
-theorem two_dvd_sum_range (n : Nat) (h : 2 ≤ n) :
-    2 ∣ ∑ i in range n, i := by
-  rw [sum_range_id_div]
-  exact Nat.dvd_mul_left 2 (n * (n - 1) / 2)
+/-- Concrete check: 0 + 1 + ... + 5 = 15. -/
+theorem sum_six : (∑ i in range 6, i) = 15 := by decide
 
-/-- Sanity check: the closed form agrees with direct computation at n = 10. -/
-theorem sum_ten : (∑ i in range 10, i) = 45 := by
-  decide
+/-- Closed form: the sum of 0..n-1 equals n*(n-1)/2.
+    This is Mathlib theorem Finset.sum_range_id. -/
+theorem sum_range_formula (n : Nat) :
+    (∑ i in range n, i) = n * (n - 1) / 2 :=
+  sum_range_id n
+
+/-- The sum of the first n naturals is 0 at n = 0 and n = 1. -/
+theorem sum_zero : (∑ i in range 0, i) = 0 := by decide
+theorem sum_one : (∑ i in range 1, i) = 0 := by decide
