@@ -1,0 +1,47 @@
+name: Lean Proof Check
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - proofs/**
+      - lakefile.toml
+      - lean-toolchain
+      - .github/workflows/lean.yml
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    name: Type-check Lean 4 proofs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl -sSf [https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh](https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh) | sh -s -- -y --default-toolchain none
+          echo HOME/.elan/bin>>HOME/.elan/bin >> HOME/.elan/bin>>GITHUB_PATH
+
+      - name: Show toolchain
+        run: lean --version
+
+      - name: Cache .lake and elan
+        uses: actions/cache@v4
+        with:
+          path: |
+            .lake
+            ~/.elan
+          key: lake-runner.os−{{ runner.os }}-runner.os−{{ hashFiles(`lean-toolchain`, `lakefile.toml`) }}
+          restore-keys: |
+            lake-${{ runner.os }}-
+
+      - name: Resolve dependencies
+        run: lake update
+
+      - name: Fetch Mathlib olean cache
+        run: lake exe cache get
+
+      - name: Build (type-checks every proof)
+        run: lake build
